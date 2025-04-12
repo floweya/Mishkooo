@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Мишка пидорас</title>
+    <style>
+        canvas { border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Мишка
+        let bear = { x: 400, y: 300, width: 50, height: 50, speed: 5 };
+        let keys = {};
+
+        // Пчёлы (для примера одна)
+        let bee = { x: 100, y: 100, width: 20, height: 20, speed: 2 };
+
+        // Управление
+        window.addEventListener('keydown', (e) => keys[e.key] = true);
+        window.addEventListener('keyup', (e) => keys[e.key] = false);
+
+        function update() {
+            // Движение Мишки
+            if (keys['ArrowUp']) bear.y -= bear.speed;
+            if (keys['ArrowDown']) bear.y += bear.speed;
+            if (keys['ArrowLeft']) bear.x -= bear.speed;
+            if (keys['ArrowRight']) bear.x += bear.speed;
+
+            // Границы
+            bear.x = Math.max(0, Math.min(bear.x, canvas.width - bear.width));
+            bear.y = Math.max(0, Math.min(bear.y, canvas.height - bear.height));
+
+            // Пчела идёт к Мишке
+            if (bee.x < bear.x) bee.x += bee.speed;
+            if (bee.x > bear.x) bee.x -= bee.speed;
+            if (bee.y < bear.y) bee.y += bee.speed;
+            if (bee.y > bear.y) bee.y -= bee.speed;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Мишка
+            ctx.fillStyle = 'brown';
+            ctx.fillRect(bear.x, bear.y, bear.width, bear.height);
+            // Пчела
+            ctx.fillStyle = 'yellow';
+            ctx.fillRect(bee.x, bee.y, bee.width, bee.height);
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
